@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Telugu to IAST transliteration</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
             body {
                 font-family: system-ui, -apple-system, BlinkMacSystemFont,
@@ -58,12 +59,12 @@
             }
 
             	/* Media queries for responsive layout */
-                @media screen and (max-width: 768px) {
-                    .column {
-                        float: none;
-                        width: 100%;
-                    }
+            @media screen and (max-width: 475px) {
+                .column {
+                    float: none;
+                    width: 100%;
                 }
+            }
         </style>
     </head>
     <body>
@@ -96,7 +97,7 @@
             '{"అ":"a","ఆ":"ā","ఇ":"i","ఈ":"ī","ఉ":"u","ఊ":"ū","ఋ":"r̥","ౠ":"r̥̄","ఌ":"l̥","ౡ":"l̥̄","ఎ":"e","ఏ":"ē","ఐ":"ai","ఒ":"o","ఓ":"ō","ఔ":"au","క":"ka","ఖ":"kha","గ":"ga","ఘ":"gha","ఙ":"ṅa","చ":"ca","ఛ":"cha","జ":"ja","ఝ":"jha","ఞ":"ña","ట":"ṭa","ఠ":"ṭha","డ":"ḍa","ఢ":"ḍha","ణ":"ṇa","త":"ta","థ":"tha","ద":"da","ధ":"dha","న":"na","ప":"pa","ఫ":"pha","బ":"ba","భ":"bha","మ":"ma","య":"ya","ర":"ra","ఱ":"ṟa","ల":"la","వ":"va","శ":"śa","ష":"ṣa","స":"sa","హ":"ha","్ః":":","్ం":"̐","ఁ":"̃","ం":"ṃ","౦":"0","౧":"1","౨":"2","౩":"3","౪":"4","౫":"5","౬":"6","౭":"7","౮":"8","౯":"9","ా":"ā","ి":"i","ీ":"ī","ు":"u","ూ":"ū","ృ":"r̥","ౄ":"r̥̄","ౢ":"l̥","ౣ":"l̥̄","ె":"e","ే":"ē","ై":"ai","ొ":"o","ో":"ō","ౌ":"au"}';
         const TELUGU_TO_IAST = JSON.parse(TELUGU_TO_IAST_STR);
 
-        console.log(TELUGU_TO_IAST);
+        // console.log(TELUGU_TO_IAST);
 
         function isTeluguConsonant(char) {
             const unicode = char.charCodeAt(0);
@@ -220,6 +221,7 @@
                 const input = document.getElementById("telugu-input");
                 const output = document.getElementById("iast-output");
                 output.innerHTML = teluguParser(input.value);
+
             });
             const form = document.getElementById("telugu-form");
             form.addEventListener("submit", (e) => {
@@ -227,6 +229,14 @@
                 const input = document.getElementById("telugu-input");
                 const output = document.getElementById("iast-output");
                 output.innerHTML = teluguParser(input.value);
+
+                const elementPosition = output.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                if (elementPosition.top < windowHeight && elementPosition.bottom >= 0) {
+                    console.log("Element is in view");
+                } else {
+                    output.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
             });
             const copyBtn = document.getElementById("copy2clipboard");
             copyBtn.addEventListener("click", () => {
