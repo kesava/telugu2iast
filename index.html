@@ -111,6 +111,12 @@
 
     // console.log(TELUGU_TO_IAST);
 
+    function isPunctuation(char) {
+        const punctuationRegex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
+        return punctuationRegex.test(char);
+    }
+
+
     function isTeluguConsonant(char) {
         const unicode = char.charCodeAt(0);
         return (unicode >= 0x0c15 && unicode <= 0x0c3d) && unicode !== 0x0c4d;
@@ -166,8 +172,10 @@
     }
 
     function isNextCharFromPaVargaOrsayshawsaha(char) {
+        const isPun = isPunctuation(char);
+        const isSpace = char === ' ';
         const unicode = char.charCodeAt(0) || '';
-        return (((unicode >= 0x0c2a) && (unicode <= 0x0c2e)) || ((unicode >= 0x0c35) && (unicode <= 0x0c39)) || (unicode === ''));
+        return (((unicode >= 0x0c2a) && (unicode <= 0x0c2e)) || ((unicode >= 0x0c35) && (unicode <= 0x0c39)) || (unicode === '') || isPun || isSpace);
     }
 
 
