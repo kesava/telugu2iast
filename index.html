@@ -99,6 +99,7 @@
     <script>
         const TELUGU_HALANT = 0x0c4d; // halant character for Telugu script
         const TELUGU_ANUSVARA = 0x0c02;
+        const TELUGU_VISARGA = 0x0c03;
         const TELUGU_TO_IAST_STR =
             '{"అ":"a","ఆ":"ā","ఇ":"i","ఈ":"ī","ఉ":"u","ఊ":"ū","ఋ":"r̥","ౠ":"r̥̄","ఌ":"l̥","ౡ":"l̥̄","ఎ":"e","ఏ":"ē","ఐ":"ai","ఒ":"o","ఓ":"ō","ఔ":"au","క":"ka","ఖ":"kha","గ":"ga","ఘ":"gha","ఙ":"ṅa","చ":"ca","ఛ":"cha","జ":"ja","ఝ":"jha","ఞ":"ña","ట":"ṭa","ఠ":"ṭha","డ":"ḍa","ఢ":"ḍha","ణ":"ṇa","త":"ta","థ":"tha","ద":"da","ధ":"dha","న":"na","ప":"pa","ఫ":"pha","బ":"ba","భ":"bha","మ":"ma","య":"ya","ర":"ra","ఱ":"ṟa","ల":"la","వ":"va","శ":"śa","ష":"ṣa","స":"sa","హ":"ha","్ః":":","్ం":"̐","ఁ":"̃","ం":"ṃ","౦":"0","౧":"1","౨":"2","౩":"3","౪":"4","౫":"5","౬":"6","౭":"7","౮":"8","౯":"9","ా":"ā","ి":"i","ీ":"ī","ు":"u","ూ":"ū","ృ":"r̥","ౄ":"r̥̄","ౢ":"l̥","ౣ":"l̥̄","ె":"e","ే":"ē","ై":"ai","ొ":"o","ో":"ō","ౌ":"au"}';
         const TELUGU_TO_IAST = JSON.parse(TELUGU_TO_IAST_STR);
@@ -118,7 +119,6 @@
         function isTeluguVowelDiacritic(char) {
             const unicode = char.charCodeAt(0);
             return (
-                (unicode >= 0x0c01 && unicode <= 0x0c03) ||
                 (unicode >= 0x0c3e && unicode <= 0x0c44) ||
                 (unicode >= 0x0c46 && unicode <= 0x0c48) ||
                 (unicode >= 0x0c4a && unicode <= 0x0c4c)
@@ -145,9 +145,35 @@
             return unicode === TELUGU_ANUSVARA;
         }
 
+        function isTeluguVisarga(char) {
+            const unicode = char.charCodeAt(0);
+            return unicode === TELUGU_VISARGA;
+        }
+
         function isTeluguVowelWithAnusvara(char, nextChar) {
             const unicode = char.charCodeAt(0);
             return isTeluguVowel(char) && isTeluguAnusvara(nextChar);
+        }
+
+        function isTeluguVowelWithVisarga(char, nextChar) {
+            const unicode = char.charCodeAt(0);
+            return isTeluguVowel(char) && isTeluguVisarga(nextChar);
+        }
+
+        function isTeluguEKaaram(char) {
+            const unicode = char.charCodeAt(0);
+            return (unicode === 0x0c07) || (unicode === 0x0c08) || (unicode === 0x0c3f) || (unicode === 0x0c40);
+        }
+
+
+        function isTeluguConsonantWithAnusvara(char, nextChar) {
+            const unicode = char.charCodeAt(0);
+            return isTeluguConsonant(char) && isTeluguAnusvara(nextChar);
+        }
+
+        function isTeluguConsonantWithVisarga(char, nextChar) {
+            const unicode = char.charCodeAt(0);
+            return isTeluguConsonant(char) && isTeluguVisarga(nextChar);
         }
 
         function isTeluguGuninthamWithAnusvara(char, nextChar, nextnextChar) {
@@ -159,6 +185,81 @@
             );
         }
 
+        function isTeluguGuninthamWithVisarga(char, nextChar, nextnextChar) {
+            const unicode = char.charCodeAt(0);
+            return (
+                isTeluguConsonant(char) &&
+                isTeluguVowelDiacritic(nextChar) &&
+                isTeluguVisarga(nextnextChar)
+            );
+        }
+
+        function isTeluguHalfAspiratedWithConsonantWithAnusvara(
+            char,
+            nextChar,
+            nextnextChar,
+            nextnextnextChar,
+        ) {
+            const unicode = char.charCodeAt(0);
+            return (
+                isTeluguConsonant(char) &&
+                isTeluguHalant(nextChar) &&
+                isTeluguConsonant(nextnextChar) &&
+                isTeluguAnusvara(nextnextnextChar)
+            );
+        }
+
+        function isTeluguHalfAspiratedWithConsonantWithVisarga(
+            char,
+            nextChar,
+            nextnextChar,
+            nextnextnextChar,
+        ) {
+            const unicode = char.charCodeAt(0);
+            return (
+                isTeluguConsonant(char) &&
+                isTeluguHalant(nextChar) &&
+                isTeluguConsonant(nextnextChar) &&
+                isTeluguVisarga(nextnextnextChar)
+            );
+        }
+
+        function isTeluguHalfAspiratedWithGuninthamWithAnusvara(
+            char,
+            nextChar,
+            nextnextChar,
+            nextnextnextChar,
+            nextnextnextnextChar
+        ) {
+            const unicode = char.charCodeAt(0);
+            return (
+                isTeluguConsonant(char) &&
+                isTeluguHalant(nextChar) &&
+                isTeluguConsonant(nextnextChar) &&
+                isTeluguVowelDiacritic(nextnextnextChar) &&
+                isTeluguAnusvara(nextnextnextnextChar)
+            );
+        }
+
+        function isTeluguHalfAspiratedWithGuninthamWithVisarga(
+            char,
+            nextChar,
+            nextnextChar,
+            nextnextnextChar,
+            nextnextnextnextChar
+        ) {
+            const unicode = char.charCodeAt(0);
+            return (
+                isTeluguConsonant(char) &&
+                isTeluguHalant(nextChar) &&
+                isTeluguConsonant(nextnextChar) &&
+                isTeluguVowelDiacritic(nextnextnextChar) &&
+                isTeluguVisarga(nextnextnextnextChar)
+            );
+        }
+
+
+
         const flattenedArray = (nestedArray) =>
             nestedArray.reduce((acc, val) => acc.concat(val), []);
 
@@ -166,6 +267,11 @@
         const getIAST = (tChar) => TELUGU_TO_IAST[tChar] || "";
 
         function teluguParser(text) {
+            const temp = [];
+            for(let k = 0; k < text.length; k++) {
+                temp.push(text.charAt(k));
+            }
+            console.log({ temp });
             const output = [];
             let i = 0;
             let len = text.length;
@@ -175,45 +281,156 @@
                 const current = text.charAt(i);
                 const nextChar = peekNextChar(1);
                 const nextnextChar = peekNextChar(2);
+                const nextnextnextChar = peekNextChar(3);
+                const nextnextnextnextChar = peekNextChar(4);
                 // console.log({ current, nextChar })
 
-                if (
-                    isTeluguGuninthamWithAnusvara(
+                switch (true) {
+                    case isTeluguHalfAspiratedWithGuninthamWithAnusvara(
+                        current,
+                        nextChar,
+                        nextnextChar,
+                        nextnextnextChar,
+                        nextnextnextnextChar
+                    ):
+                        output.push([
+                            stripTheAkaaram(getIAST(current)),
+                            stripTheAkaaram(getIAST(nextnextChar)),
+                            getIAST(nextnextnextChar),
+                            isTeluguEKaaram(nextnextnextChar) ? "n" : "ṁ",
+                        ]);
+                        i += 5;
+
+                        break;
+                    case isTeluguHalfAspiratedWithGuninthamWithVisarga(
+                        current,
+                        nextChar,
+                        nextnextChar,
+                        nextnextnextChar,
+                        nextnextnextnextChar
+                    ):
+                        output.push([
+                            stripTheAkaaram(getIAST(current)),
+                            stripTheAkaaram(getIAST(nextnextChar)),
+                            getIAST(nextnextnextChar),
+                            "ah",
+                        ]);
+                        i += 5;
+
+                        break;
+                    case isTeluguHalfAspiratedWithConsonantWithAnusvara(
+                        current,
+                        nextChar,
+                        nextnextChar,
+                        nextnextnextChar
+                    ):
+                        output.push([
+                            stripTheAkaaram(getIAST(current)),
+                            stripTheAkaaram(getIAST(nextnextChar)),
+                            isTeluguEKaaram(nextnextChar) ? "n" : "ṁ",
+                        ]);
+                        i += 4;
+
+                        break;
+                    case isTeluguHalfAspiratedWithConsonantWithVisarga(
+                        current,
+                        nextChar,
+                        nextnextChar,
+                        nextnextnextChar
+                    ):
+                        output.push([
+                            stripTheAkaaram(getIAST(current)),
+                            stripTheAkaaram(getIAST(nextnextChar)),
+                            "ah",
+                        ]);
+                        i += 4;
+
+                        break;
+                    case isTeluguGuninthamWithAnusvara(
                         current,
                         nextChar,
                         nextnextChar
-                    )
-                ) {
-                    output.push([
-                        stripTheAkaaram(getIAST(current)),
-                        getIAST(nextChar),
-                        "n",
-                    ]);
-                    i += 3;
-                } else if (isTeluguVowelWithAnusvara(current, nextChar)) {
-                    output.push([getIAST(current), "n"]);
-                    i += 2;
-                } else if (isTeluguGunintham(current, nextChar)) {
-                    output.push([
-                        stripTheAkaaram(getIAST(current)),
-                        getIAST(nextChar),
-                    ]);
-                    i += 2;
-                } else if (isTeluguAspiratedHalfLetter(current, nextChar)) {
-                    output.push([stripTheAkaaram(getIAST(current))]);
-                    i += 2;
-                } else if (
-                    isTeluguConsonant(current) ||
-                    isTeluguVowel(current)
-                ) {
-                    output.push([getIAST(current)]);
-                    i += 1;
-                } else if (current === '\n') {
-                    output.push(['<br/>']);
-                    i += 1;
-                } else {
-                    output.push(current);
-                    i += 1;
+                    ):
+                        output.push([
+                            stripTheAkaaram(getIAST(current)),
+                            getIAST(nextChar),
+                            isTeluguEKaaram(nextChar) ? "n" : "ṁ",
+                        ]);
+                        i += 3;
+
+                        break;
+                    case isTeluguGuninthamWithVisarga(
+                        current,
+                        nextChar,
+                        nextnextChar
+                    ):
+                        output.push([
+                            stripTheAkaaram(getIAST(current)),
+                            getIAST(nextChar),
+                            "ah",
+                        ]);
+                        i += 3;
+                        break;
+
+                    case isTeluguGunintham(current, nextChar):
+                        output.push([
+                            stripTheAkaaram(getIAST(current)),
+                            getIAST(nextChar),
+                        ]);
+                        i += 2;
+                        break;
+
+                    case isTeluguConsonantWithAnusvara(current, nextChar):
+                        output.push([stripTheAkaaram(getIAST(current)), isTeluguEKaaram(nextChar) ? "n" : "ṁ"]);
+                        i += 2;
+                        break;
+                    case isTeluguConsonantWithVisarga(current, nextChar):
+                        output.push([stripTheAkaaram(getIAST(current)), "ah"]);
+                        i += 2;
+                        break;
+                    case isTeluguVowelWithAnusvara(current, nextChar):
+                        output.push([getIAST(current), isTeluguEKaaram(current) ? "n" : "ṁ"]);
+                        i += 2;
+                        break;
+                    case isTeluguVowelWithVisarga(current, nextChar):
+                        output.push([getIAST(current), "ah"]);
+                        i += 2;
+                        break;
+                    case isTeluguAspiratedHalfLetter(current, nextChar):
+                        output.push([stripTheAkaaram(getIAST(current))]);
+                        i += 2;
+                        break;
+                    case isTeluguHalant(current):
+                        i += 1;
+                        break;
+                    case isTeluguConsonant(current):
+                        output.push([getIAST(current)]);
+                        i += 1;
+                        break;
+                    case isTeluguVowel(current):
+                        output.push([getIAST(current)]);
+                        i += 1;
+                        break;
+
+                    case isTeluguVowelDiacritic(current):
+                        output.push([getIAST(current)]);
+                        i += 1;
+                        break;
+
+                    case isTeluguAnusvara(current):
+                        output.push(["ṁ"]);
+                        i += 1;
+                        break;
+                        
+                    case (current === "\n"):
+                        output.push(["<br/>"]);
+                        i += 1;
+                        break;
+
+                    default:
+                        output.push([current]);
+                        i += 1;
+                        break;
                 }
             }
 
@@ -222,7 +439,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
 
-            // onload
+            // onload - sample text
             const input = document.getElementById("telugu-input");
             input.value = `పలికెడిది భాగవతమట
 పలికించు విభుండు రామభద్రుండట నే
@@ -233,7 +450,7 @@
 
             // rest of it
             const convert = document.getElementById("convert");
-            console.log({ convert });
+            // console.log({ convert });
             convert.addEventListener("click", () => {
                 const input = document.getElementById("telugu-input");
                 const output = document.getElementById("iast-output");
