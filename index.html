@@ -166,8 +166,8 @@
     }
 
     function isNextCharFromPaVargaOrsayshawsaha(char) {
-        const unicode = char.charCodeAt(0);
-        return ((unicode >= 0x0c2a) && (unicode <= 0x0c2e)) || ((unicode >= 0x0c35) && (unicode <= 0x0c39));
+        const unicode = char.charCodeAt(0) || '';
+        return (((unicode >= 0x0c2a) && (unicode <= 0x0c2e)) || ((unicode >= 0x0c35) && (unicode <= 0x0c39)) || (unicode === ''));
     }
 
 
