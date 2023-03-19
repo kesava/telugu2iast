@@ -327,7 +327,7 @@
                     ):
                         output.push([
                             stripTheAkaaram(getIAST(current)),
-                            stripTheAkaaram(getIAST(nextnextChar)),
+                            getIAST(nextnextChar),
                             isNextCharFromPaVargaOrsayshawsaha(nextnextnextnextChar) ? "ṁ" : "n",
                         ]);
                         i += 4;
@@ -341,7 +341,7 @@
                     ):
                         output.push([
                             stripTheAkaaram(getIAST(current)),
-                            stripTheAkaaram(getIAST(nextnextChar)),
+                            getIAST(nextnextChar),
                             "ah",
                         ]);
                         i += 4;
