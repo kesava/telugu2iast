@@ -44,6 +44,7 @@
                 font-size: 1.5em;
                 padding: 10px;
                 box-sizing: border-box;
+                margin-bottom: 10px;
             }
 
             #iast-output {
@@ -53,7 +54,16 @@
                 padding: 10px;
                 box-sizing: border-box;
                 background-color: #fff;
+                margin-bottom: 10px;
             }
+
+            	/* Media queries for responsive layout */
+                @media screen and (max-width: 768px) {
+                    .column {
+                        float: none;
+                        width: 100%;
+                    }
+                }
         </style>
     </head>
     <body>
@@ -75,6 +85,7 @@
                 <h1>IAST Output</h1>
                 <p>You should see your IAST output here.</p>
                 <div id="iast-output"></div>
+                <button id="copy2clipboard">Copy to Clipboard</button>
             </div>
         </div>
     </body>
@@ -217,6 +228,22 @@
                 const output = document.getElementById("iast-output");
                 output.innerHTML = teluguParser(input.value);
             });
+            const copyBtn = document.getElementById("copy2clipboard");
+            copyBtn.addEventListener("click", () => {
+                const output = document.getElementById("iast-output");
+                copyToClipboard(output.innerText);
+            });
         });
+
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+        }
+
+
     </script>
 </html>
