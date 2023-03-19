@@ -102,14 +102,14 @@
         const TELUGU_ANUSVARA = 0x0c02;
         const TELUGU_VISARGA = 0x0c03;
         const TELUGU_TO_IAST_STR =
-            '{"అ":"a","ఆ":"ā","ఇ":"i","ఈ":"ī","ఉ":"u","ఊ":"ū","ఋ":"r̥","ౠ":"r̥̄","ఌ":"l̥","ౡ":"l̥̄","ఎ":"e","ఏ":"ē","ఐ":"ai","ఒ":"o","ఓ":"ō","ఔ":"au","క":"ka","ఖ":"kha","గ":"ga","ఘ":"gha","ఙ":"ṅa","చ":"ca","ఛ":"cha","జ":"ja","ఝ":"jha","ఞ":"ña","ట":"ṭa","ఠ":"ṭha","డ":"ḍa","ఢ":"ḍha","ణ":"ṇa","త":"ta","థ":"tha","ద":"da","ధ":"dha","న":"na","ప":"pa","ఫ":"pha","బ":"ba","భ":"bha","మ":"ma","య":"ya","ర":"ra","ఱ":"ṟa","ల":"la","వ":"va","శ":"śa","ష":"ṣa","స":"sa","హ":"ha","్ః":":","్ం":"̐","ఁ":"̃","ం":"ṃ","౦":"0","౧":"1","౨":"2","౩":"3","౪":"4","౫":"5","౬":"6","౭":"7","౮":"8","౯":"9","ా":"ā","ి":"i","ీ":"ī","ు":"u","ూ":"ū","ృ":"r̥","ౄ":"r̥̄","ౢ":"l̥","ౣ":"l̥̄","ె":"e","ే":"ē","ై":"ai","ొ":"o","ో":"ō","ౌ":"au"}';
+            '{"అ":"a","ఆ":"ā","ఇ":"i","ఈ":"ī","ఉ":"u","ఊ":"ū","ఋ":"r̥","ౠ":"r̥̄","ఌ":"l̥","ౡ":"l̥̄","ఎ":"e","ఏ":"ē","ఐ":"ai","ఒ":"o","ఓ":"ō","ఔ":"au","క":"ka","ఖ":"kha","గ":"ga","ఘ":"gha","ఙ":"ṅa","చ":"ca","ఛ":"cha","జ":"ja","ఝ":"jha","ఞ":"ña","ట":"ṭa","ఠ":"ṭha","డ":"ḍa","ఢ":"ḍha","ణ":"ṇa","త":"ta","థ":"tha","ద":"da","ధ":"dha","న":"na","ప":"pa","ఫ":"pha","బ":"ba","భ":"bha","మ":"ma","య":"ya","ర":"ra","ఱ":"ṟa","ల":"la","వ":"va","శ":"śa","ష":"ṣa","స":"sa","హ":"ha","ళ": "ḷ", "్ః":":","్ం":"̐","ఁ":"̃","ం":"ṃ","౦":"0","౧":"1","౨":"2","౩":"3","౪":"4","౫":"5","౬":"6","౭":"7","౮":"8","౯":"9","ా":"ā","ి":"i","ీ":"ī","ు":"u","ూ":"ū","ృ":"r̥","ౄ":"r̥̄","ౢ":"l̥","ౣ":"l̥̄","ె":"e","ే":"ē","ై":"ai","ొ":"o","ో":"ō","ౌ":"au"}';
         const TELUGU_TO_IAST = JSON.parse(TELUGU_TO_IAST_STR);
 
         // console.log(TELUGU_TO_IAST);
 
         function isTeluguConsonant(char) {
             const unicode = char.charCodeAt(0);
-            return unicode >= 0x0c15 && unicode <= 0x0c3d && unicode !== 0x0c4d;
+            return (unicode >= 0x0c15 && unicode <= 0x0c3d) && unicode !== 0x0c4d;
         }
 
         function isTeluguVowel(char) {
@@ -264,7 +264,14 @@
         const flattenedArray = (nestedArray) =>
             nestedArray.reduce((acc, val) => acc.concat(val), []);
 
-        const stripTheAkaaram = (str) => str.slice(0, -1);
+        const stripTheAkaaram = (str) => {
+            const lastChar = str.slice(-1);
+            if ((lastChar >= 'a') && (lastChar <= 'z')) {
+                return str.slice(0, -1);
+            } else {
+                return str;
+            }
+        }
         const getIAST = (tChar) => TELUGU_TO_IAST[tChar] || "";
 
         function teluguParser(text) {
