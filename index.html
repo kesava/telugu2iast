@@ -73,8 +73,27 @@
                 width: 100%;
             }
         }
+
         button {
             margin-right: 10px;
+        }
+
+        blockquote {
+            font-family: Arial, sans-serif;
+            font-size: 1.2rem;
+            color: #333;
+            border-left: 4px solid #ccc;
+            padding: 0 16px;
+        }
+
+        blockquote p {
+            margin: 10px;
+        }
+
+        blockquote footer {
+            font-style: italic;
+            text-align: right;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -99,6 +118,14 @@
             <button id="copy2clipboard">Copy to Clipboard</button>
             <button id="print">Print</button>
         </div>
+    </div>
+    <div>
+        <blockquote>
+            <p>"ముత్యాలలాంటి తెలుగక్షరాలంటూ లిపిమీద లేనిపోని సెంటిమెంట్లు పెట్టుకోవడం మాని రోమన్ లిపిలో తెలుగును నేర్పితే అప్పుడు మన దేశం ఆధునిక యుగం లోనికి ప్రవేశిస్తుందని నా నిశ్ఛితాభిప్రాయం. ప్రపంచ తెలుగుమహాసభ వారు ఈ విషయమై ఆలోచించడం మంచిదని నేననుకుంటున్నాను. (ప్రజాతంత్ర (18.4.1976) "అనంతం" పేజీ196.)"</p>
+            <p>"mutyālalānṭi telugakṣarālanṭū lipimīda lēnipōni senṭimenṭlu peṭṭukōvaḍaṁ māni rōman lipilō telugunu nērpitē appuḍu mana dēśaṁ ādhunika yugaṁ lōniki pravēśistundani nā niśchitābhiprāyaṁ. prapanca telugumahāsabha vāru ī viṣayamai ālōcincaḍaṁ mancidani nēnanukunṭunnānu. (prajātantra (18.4.1976) "anantaṁ" pējī196.)"</p>
+            <footer>- <a href="https://en.wikipedia.org/wiki/Sri_Sri_(writer)" target="_blank">Srirangam Srinivasa Rao (Sri Sri)</a></footer>
+        </blockquote>
+
     </div>
 </body>
 <script>
@@ -521,7 +548,6 @@
 
     function printIAST() {
         const element = document.getElementById("iast-output");
-        console.log({ element: element.outerHTML, ee: element.innerHTML })
 
         // Clone the element to remove any unwanted styles or scripts
         const clone = element.cloneNode(true);
