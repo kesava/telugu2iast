@@ -498,6 +498,22 @@
         const output = document.getElementById("iast-output");
         output.innerHTML = teluguParser(input.value);
 
+        input.addEventListener("focus", function() {
+            this.select();
+        });
+
+        input.addEventListener("paste", function(event) {
+            // Prevent the default paste behavior
+            event.preventDefault();
+
+            // Get the pasted text and replace newlines with <br>
+            const pastedText = event.clipboardData.getData("text");
+            const modifiedText = pastedText.replace(/(\r\n|\n|\r)/gm, "<br>");
+
+            // Insert the modified text into the textarea
+            document.execCommand("insertHTML", false, modifiedText);
+        });
+
         // rest of it
         const convert = document.getElementById("convert");
         // console.log({ convert });
