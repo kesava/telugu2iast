@@ -160,9 +160,9 @@
             return isTeluguVowel(char) && isTeluguVisarga(nextChar);
         }
 
-        function isTeluguEKaaram(char) {
+        function isNextCharFromPaVarga(char) {
             const unicode = char.charCodeAt(0);
-            return (unicode === 0x0c07) || (unicode === 0x0c08) || (unicode === 0x0c3f) || (unicode === 0x0c40);
+            return (unicode >= 0x0c2a) && (unicode === 0x0c2e);
         }
 
 
@@ -283,6 +283,7 @@
                 const nextnextChar = peekNextChar(2);
                 const nextnextnextChar = peekNextChar(3);
                 const nextnextnextnextChar = peekNextChar(4);
+                const nextnextnextnextnextChar = peekNextChar(5);
                 // console.log({ current, nextChar })
 
                 switch (true) {
@@ -297,7 +298,7 @@
                             stripTheAkaaram(getIAST(current)),
                             stripTheAkaaram(getIAST(nextnextChar)),
                             getIAST(nextnextnextChar),
-                            isTeluguEKaaram(nextnextnextChar) ? "n" : "ṁ",
+                            isNextCharFromPaVarga(nextnextnextnextnextChar) ? "ṁ" : "n",
                         ]);
                         i += 5;
 
@@ -327,7 +328,7 @@
                         output.push([
                             stripTheAkaaram(getIAST(current)),
                             stripTheAkaaram(getIAST(nextnextChar)),
-                            isTeluguEKaaram(nextnextChar) ? "n" : "ṁ",
+                            isNextCharFromPaVarga(nextnextnextnextChar) ? "ṁ" : "n",
                         ]);
                         i += 4;
 
@@ -354,7 +355,7 @@
                         output.push([
                             stripTheAkaaram(getIAST(current)),
                             getIAST(nextChar),
-                            isTeluguEKaaram(nextChar) ? "n" : "ṁ",
+                            isNextCharFromPaVarga(nextnextnextChar) ? "ṁ" : "n",
                         ]);
                         i += 3;
 
@@ -381,15 +382,15 @@
                         break;
 
                     case isTeluguConsonantWithAnusvara(current, nextChar):
-                        output.push([stripTheAkaaram(getIAST(current)), isTeluguEKaaram(nextChar) ? "n" : "ṁ"]);
+                        output.push([getIAST(current), isNextCharFromPaVarga(nextnextChar) ? "ṁ" : "n"]);
                         i += 2;
                         break;
                     case isTeluguConsonantWithVisarga(current, nextChar):
-                        output.push([stripTheAkaaram(getIAST(current)), "ah"]);
+                        output.push([getIAST(current), "ah"]);
                         i += 2;
                         break;
                     case isTeluguVowelWithAnusvara(current, nextChar):
-                        output.push([getIAST(current), isTeluguEKaaram(current) ? "n" : "ṁ"]);
+                        output.push([getIAST(current), isNextCharFromPaVarga(nextnextChar) ? "ṁ" : "n"]);
                         i += 2;
                         break;
                     case isTeluguVowelWithVisarga(current, nextChar):
@@ -421,7 +422,7 @@
                         output.push(["ṁ"]);
                         i += 1;
                         break;
-                        
+
                     case (current === "\n"):
                         output.push(["<br/>"]);
                         i += 1;
