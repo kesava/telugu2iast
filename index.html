@@ -64,7 +64,7 @@
             }
 
             	/* Media queries for responsive layout */
-            @media screen and (max-width: 475px) {
+            @media screen and (max-width: 768px) {
                 .column {
                     float: none;
                     width: 100%;
@@ -221,6 +221,17 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
+
+            // onload
+            const input = document.getElementById("telugu-input");
+            input.value = `పలికెడిది భాగవతమట
+పలికించు విభుండు రామభాద్రుండట నే
+పలికిన భవహరమగునట
+బలికెద వేరొండు గాధ పలుకగనేల !!`;
+            const output = document.getElementById("iast-output");
+            output.innerHTML = teluguParser(input.value);
+
+            // rest of it
             const convert = document.getElementById("convert");
             console.log({ convert });
             convert.addEventListener("click", () => {
