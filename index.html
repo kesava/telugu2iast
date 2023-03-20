@@ -62,8 +62,15 @@
             padding: 10px;
             box-sizing: border-box;
             background-color: #fff;
-            margin-bottom: 10px;
             overflow-y: auto;
+        }
+
+        #my-handle {
+            width: 100%;
+            height: 10px;
+            background-color: #ccc;
+            cursor: ns-resize;
+            margin-bottom: 10px;
         }
 
         /* Media queries for responsive layout */
@@ -115,9 +122,12 @@
             <h2>IAST Output</h2>
             <p>You should see your IAST output here.</p>
             <div id="iast-output"></div>
+            <div id="my-handle"  style="background-color: #ccc; height: 10px; cursor: ns-resize;"></div>
             <button id="copy2clipboard">Copy to Clipboard</button>
             <button id="print">Print</button>
+
         </div>
+
     </div>
     <div>
         <blockquote>
@@ -550,6 +560,28 @@
         const printBtn = document.getElementById("print");
         printBtn.addEventListener("click", () => {
             printIAST();
+        });
+
+        const handle = document.getElementById("my-handle");
+
+        let isDragging = false;
+        let startY, startHeight;
+
+        handle.addEventListener("mousedown", function(event) {
+            isDragging = true;
+            startY = event.clientY;
+            startHeight = parseInt(window.getComputedStyle(output).height, 10);
+        });
+
+        document.addEventListener("mousemove", function(event) {
+            if (isDragging) {
+                const height = startHeight + (event.clientY - startY);
+                output.style.height = `${height}px`;
+            }
+        });
+
+        document.addEventListener("mouseup", function(event) {
+            isDragging = false;
         });
     });
 
