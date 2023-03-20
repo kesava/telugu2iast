@@ -102,6 +102,18 @@
             text-align: right;
             margin-top: 8px;
         }
+
+        div.syllable-breaks span.syllable + span.syllable::before {
+            content: "\00B7";   /* U+00B7 MIDDLE DOT */
+            font-size: 0.8em;
+            color: #f5c8c8;
+            margin-left: 1px;
+        }
+
+        div.syllable-breaks span.syllable + span.punctuation, span.punctuation + span.syllable {
+            display: inline-block;
+            margin: 0 5px;
+        }
     </style>
 </head>
 
@@ -123,6 +135,7 @@
             <p>You should see your IAST output here.</p>
             <div id="iast-output"></div>
             <div id="my-handle"  style="background-color: #ccc; height: 10px; cursor: ns-resize;"></div>
+            <input type="checkbox" id="syllable-breaks" checked><label for="syllable-breaks">Show syllable breaks</label>&nbsp;&nbsp;&nbsp;
             <button id="copy2clipboard">Copy to Clipboard</button>
             <button id="print">Print</button>
 
@@ -152,6 +165,9 @@
         const punctuationRegex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
         return punctuationRegex.test(char);
     }
+    const isSpace = char => char === ' ';
+    const isAscii = char => char >= 'a' && char <= 'z' || char >= 'A' && char <= 'Z';
+
 
 
     function isTeluguConsonant(char) {
@@ -210,9 +226,9 @@
 
     function isNextCharFromPaVargaOrsayshawsaha(char) {
         const isPun = isPunctuation(char);
-        const isSpace = char === ' ';
+        const isSpa = isSpace(char);
         const unicode = char.charCodeAt(0) || '';
-        return (((unicode >= 0x0c2a) && (unicode <= 0x0c30)) || ((unicode >= 0x0c35) && (unicode <= 0x0c39)) || (unicode === '') || isPun || isSpace);
+        return (((unicode >= 0x0c2a) && (unicode <= 0x0c30)) || ((unicode >= 0x0c35) && (unicode <= 0x0c39)) || (unicode === '') || isPun || isSpa);
     }
 
 
@@ -311,7 +327,23 @@
 
 
     const flattenedArray = (nestedArray) =>
-        nestedArray.reduce((acc, val) => acc.concat(val), []);
+        nestedArray.reduce((acc, val) => {
+            console.log({ val });
+            if (val.length === 0) return acc;
+            if ((val.length === 1) && (val[0] === '<br>')) {
+                return acc.push(val[0]) && acc;
+            }
+            if ((val.length === 1) && (isPunctuation(val[0]) || isSpace(val[0]))) {
+                return acc.push(`<span class="punctuation">${val[0]}</span>`) && acc;
+            }
+            if (val.length === 1) {
+                if ((val[0].length === 1) && isAscii(val[0])) {
+                    return acc.push(val[0]) && acc;
+                }
+            }
+
+            return acc.push(`<span class="syllable">${val.join('')}</span>`) && acc;
+        }, []);
 
     const stripTheAkaaram = (str) => {
         const lastChar = str.slice(-1);
@@ -483,7 +515,7 @@
                     break;
 
                 case (current === "\n"):
-                    output.push(["<br/>"]);
+                    output.push(["<br>"]);
                     i += 1;
                     break;
 
@@ -506,6 +538,7 @@
 పలికిన భవహరమగునట
 బలికెద వేరొండు గాధ పలుకగనేల !!`;
         const output = document.getElementById("iast-output");
+        output.classList.add("syllable-breaks");
         output.innerHTML = teluguParser(input.value);
 
         input.addEventListener("focus", function() {
@@ -549,6 +582,14 @@
                     behavior: "smooth",
                     block: "start"
                 });
+            }
+        });
+        const syllable = document.getElementById("syllable-breaks");
+        syllable.addEventListener("click", event => {
+            if (event.target.checked) {
+                output.classList.add("syllable-breaks");
+            } else {
+                output.classList.remove("syllable-breaks");
             }
         });
         const copyBtn = document.getElementById("copy2clipboard");
@@ -622,9 +663,20 @@
             font-size: 1.5rem;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
             }
+            .syllable-breaks span.syllable + span.syllable::before {
+                content: ".";   /* U+00B7 MIDDLE DOT */
+                font-size: 0.8em;
+                color: #b5b4b4;
+                margin-left: 2px;
+            }
+
+            .syllable-breaks span.syllable + span.punctuation, span.punctuation + span.syllable {
+                display: inline-block;
+                margin: 0 4px;
+            }
         </style>
     </head>
-    <body>
+    <body class="${element.classList.contains('syllable-breaks') ? 'syllable-breaks' : ''}">
       ${element.innerHTML}
     </body>
   </html>
