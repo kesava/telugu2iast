@@ -132,7 +132,7 @@
 </head>
 
 <body>
-    <h1>Telugu to IAST transliteration</h1>
+    <h1>Telugu to <a href="https://en.wikipedia.org/wiki/International_Alphabet_of_Sanskrit_Transliteration" target="_blank">IAST</a> transliteration</h1>
     <div class="container">
         <div class="column left-column">
             <h2>Telugu Input</h2>
@@ -149,7 +149,7 @@
             <p>You should see your IAST output here.</p>
             <div id="iast-output"></div>
             <div id="my-handle"  style="background-color: #ccc; height: 10px; cursor: ns-resize;"></div>
-            <input type="checkbox" id="syllable-breaks" checked><label for="syllable-breaks">Show syllable breaks</label>&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" id="syllable-breaks"><label for="syllable-breaks">Show syllable breaks</label>&nbsp;&nbsp;&nbsp;
             <button id="copy2clipboard">Copy to Clipboard</button>
             <button id="print">Print</button>
         </div>
@@ -551,7 +551,7 @@
 పలికిన భవహరమగునట
 బలికెద వేరొండు గాధ పలుకగనేల !!`;
         const output = document.getElementById("iast-output");
-        output.classList.add("syllable-breaks");
+        // output.classList.add("syllable-breaks");
         output.innerHTML = teluguParser(input.value);
 
         input.addEventListener("focus", function() {
